@@ -45,7 +45,6 @@ public class GameWorld
         bear.update(groundLevel, delta);
         ScoreManager.updateScore(bear, hive);
         levelManager.update(this);
-        System.out.println("Score: " + ScoreManager.score);
         updateBackground();
     }
 
@@ -93,5 +92,6 @@ public class GameWorld
     public void setSpeed(int speed)
     {
         tree.setSpeed(speed);
+        this.speed = speed / 2;
     }
 }
