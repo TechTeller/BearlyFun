@@ -62,4 +62,10 @@ public class Tree
     {
         this.speed = speed;
     }
+
+    public void setPosition(float x, float y)
+    {
+        position.x = x;
+        position.y = y;
+    }
 }

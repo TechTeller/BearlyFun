@@ -30,7 +30,6 @@ public class Hive
     {
         id++;
         level = MathUtils.random(tree.getPosition().y, 900);
-        System.out.println("Hive generated on new tree. Level: " + level);
     }
 
     public void update(float delta)

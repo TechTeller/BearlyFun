@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kabirlal.ui.UIManager;
+import com.kabirlal.screens.GameScreen;
 
 public class GameRenderer
 {
@@ -15,10 +14,9 @@ public class GameRenderer
     private OrthographicCamera camera;
     private OrthographicCamera uiCamera;
     private SpriteBatch batcher;
-    UIManager uiManager;
     ShapeRenderer shapeRenderer;
 
-    public GameRenderer(GameWorld world, Viewport viewport)
+    public GameRenderer(GameWorld world, GameScreen.GameState currentState)
     {
         //World
         this.world = world;
@@ -26,9 +24,6 @@ public class GameRenderer
         //Camera
         camera = new OrthographicCamera();
         camera.setToOrtho(true, 1920, 1080);
-
-        //Setup the UI
-        uiManager = new UIManager(viewport);
 
         //Shape Renderer
         shapeRenderer = new ShapeRenderer();
@@ -38,13 +33,12 @@ public class GameRenderer
         batcher.setProjectionMatrix(camera.combined);
     }
 
-    public void render()
+    public void render(GameScreen.GameState currentState)
     {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        world.render(batcher, shapeRenderer);
-        uiManager.render();
+        world.render(batcher, shapeRenderer, currentState);
     }
 
     public void dispose()

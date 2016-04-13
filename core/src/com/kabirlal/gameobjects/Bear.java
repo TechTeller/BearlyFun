@@ -58,7 +58,6 @@ public class Bear {
     {
         grabbing = true;
         height = height / 2;
-        System.out.println("Grabbing");
     }
 
     public void undoGrab()
@@ -67,7 +66,6 @@ public class Bear {
         {
             grabbing = false;
             height = height * 2;
-            System.out.println("Ungrabbing");
         }
 
     }

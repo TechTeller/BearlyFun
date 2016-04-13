@@ -1,4 +1,4 @@
-package com.kabirlal.barelyfun;
+package com.kabirlal.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -9,9 +9,17 @@ import com.kabirlal.gameworld.GameRenderer;
 import com.kabirlal.gameworld.GameWorld;
 import com.kabirlal.helpers.AssetLoader;
 import com.kabirlal.helpers.InputHandler;
+import com.kabirlal.ui.UIManager;
 
 public class GameScreen implements Screen
 {
+    public enum GameState
+    {
+        MENU, RUNNING, PAUSED, GAMEOVER
+    }
+
+    private GameState currentState;
+
     String TAG = "BearlyFun";
 
     private GameWorld world;
@@ -20,11 +28,14 @@ public class GameScreen implements Screen
     Viewport viewport;
     OrthographicCamera camera;
 
+    UIManager uiManager;
+
     private float runTime = 0;
 
 
     public GameScreen()
     {
+        currentState = GameState.MENU;
         float screenWidth = 1920;
         float screenHeight = 1080;
 
@@ -40,9 +51,12 @@ public class GameScreen implements Screen
         AssetLoader.load();
 
         world = new GameWorld();
-        renderer = new GameRenderer(world, viewport);
+        renderer = new GameRenderer(world, currentState);
 
         Gdx.input.setInputProcessor(new InputHandler(world.getBear()));
+
+        //Setup the UI
+        uiManager = new UIManager(viewport, this);
     }
 
     @Override
@@ -53,13 +67,23 @@ public class GameScreen implements Screen
     @Override
     public void render(float delta) {
         runTime += delta;
-        world.update(delta);
 
-        renderer.render();
+        if(world.hasGameEnded())
+        {
+            world.setHasEnded(false);
+            setCurrentState(GameState.GAMEOVER);
+        }
+
+        world.update(delta, currentState);
+
+        renderer.render(currentState);
+
+        uiManager.update(currentState);
     }
 
     @Override
     public void resize(int width, int height) {
+        uiManager.resize(width, height);
     }
 
     @Override
@@ -83,4 +107,20 @@ public class GameScreen implements Screen
         renderer.dispose();
 
     }
+
+    public GameState getCurrentState()
+    {
+        return currentState;
+    }
+
+    public void  setCurrentState(GameState currentState)
+    {
+        this.currentState = currentState;
+    }
+
+    public GameWorld getWorld()
+    {
+        return world;
+    }
+
 }

@@ -34,4 +34,9 @@ public class ScoreManager {
     {
         return score;
     }
+
+    public static int getMissedHives()
+    {
+        return hivesMissed;
+    }
 }
