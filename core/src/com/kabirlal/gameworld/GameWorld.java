@@ -128,6 +128,7 @@ public class GameWorld
         renderBackground(batch);
         tree.renderGraphic(batch);
         hive.renderGraphic(batch);
+        ScoreManager.renderMissedHives(batch);
         batch.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);

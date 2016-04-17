@@ -51,7 +51,7 @@ public class UIManager {
         scoreText = new Label("Score : " + ScoreManager.getScore(), skin);
         scoreText.setPosition(10, 1000);
 
-        missedHivesText = new Label("Missed Hives: " + ScoreManager.hivesMissed, skin);
+        missedHivesText = new Label("Missed Hives: ", skin);
         missedHivesText.setPosition(400, 1000);
 
 
@@ -142,11 +142,17 @@ public class UIManager {
         if(!Gdx.input.getInputProcessor().getClass().equals(InputHandler.class))
             Gdx.input.setInputProcessor(new InputHandler(screen.getWorld().getBear()));
         scoreText.setText("Score : " + ScoreManager.getScore());
-        missedHivesText.setText("Missed Hives : " + ScoreManager.hivesMissed);
+        if(ScoreManager.hivesMissed == 0)
+            missedHivesText.setText("Missed Hives: 0");
+        else
+            missedHivesText.setText("Missed Hives:");
         gameStage.getViewport().update(width, height);
         gameStage.act(Gdx.graphics.getDeltaTime());
         gameStage.draw();
     }
+
+
+
 
     public void update(GameScreen.GameState currentState)
     {

@@ -1,6 +1,7 @@
 package com.kabirlal.helpers;
 
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kabirlal.gameworld.GameWorld;
 
 import java.util.ArrayList;
@@ -28,6 +29,31 @@ public class ScoreManager {
         {
             missedHives.add(world.getHive().getID());
             hivesMissed = missedHives.size();
+        }
+    }
+
+    public static void updateMissedHives(float delta)
+    {
+
+    }
+
+    public static void renderMissedHives(SpriteBatch batch)
+    {
+
+        if(ScoreManager.hivesMissed > 0)
+        {
+            batch.draw(AssetLoader.hiveRegion, 620 + 20, 35, AssetLoader.hiveRegion.getRegionWidth(), AssetLoader.hiveRegion.getRegionHeight(),
+                    AssetLoader.hiveRegion.getRegionWidth(), AssetLoader.hiveRegion.getRegionHeight(), 1f, 1f, 45, true);
+        }
+        if(ScoreManager.hivesMissed > 1)
+        {
+            batch.draw(AssetLoader.hiveRegion, 620 + AssetLoader.hiveRegion.getRegionWidth() + 20, 35, AssetLoader.hiveRegion.getRegionWidth(), AssetLoader.hiveRegion.getRegionHeight(),
+                    AssetLoader.hiveRegion.getRegionWidth(), AssetLoader.hiveRegion.getRegionHeight(), 1f, 1f, 45, true);
+        }
+        if(ScoreManager.hivesMissed > 2)
+        {
+            batch.draw(AssetLoader.hiveRegion, 620 + AssetLoader.hiveRegion.getRegionWidth() + 20 + AssetLoader.hiveRegion.getRegionWidth(), 35, AssetLoader.hiveRegion.getRegionWidth(), AssetLoader.hiveRegion.getRegionHeight(),
+                    AssetLoader.hiveRegion.getRegionWidth(), AssetLoader.hiveRegion.getRegionHeight(), 1f, 1f, 45, true);
         }
     }
 

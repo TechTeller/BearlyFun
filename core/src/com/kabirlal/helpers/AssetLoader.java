@@ -49,7 +49,6 @@ public class AssetLoader
         treeRegion.flip(false, true);
         hiveRegion = new TextureRegion(hive, hive.getWidth(), hive.getHeight());
         hiveRegion.flip(false, true);
-
     }
 
     public void dispose()
