@@ -11,6 +11,7 @@ import com.kabirlal.gameobjects.Tree;
 import com.kabirlal.helpers.AssetLoader;
 import com.kabirlal.helpers.LevelManager;
 import com.kabirlal.helpers.ScoreManager;
+import com.kabirlal.menuworld.MenuWorld;
 import com.kabirlal.screens.GameScreen;
 
 public class GameWorld
@@ -19,6 +20,8 @@ public class GameWorld
     private Bear bear;
     private Tree tree;
     private Hive hive;
+
+    private MenuWorld menuWorld;
 
     private int groundLevel;
     private boolean hasEnded;
@@ -35,8 +38,10 @@ public class GameWorld
         hasEnded = false;
         groundLevel = Gdx.graphics.getHeight() - 20;
 
-        bear = new Bear(200, 200, 150, 150 );
-        tree = new Tree(Gdx.graphics.getWidth(), 345, 100, 900, 20);
+        menuWorld = new MenuWorld();
+
+        bear = new Bear(200, 200, 200, 150 );
+        tree = new Tree(Gdx.graphics.getWidth(), 345, 20);
         hive = new Hive(tree);
         levelManager = new LevelManager();
 
@@ -52,7 +57,7 @@ public class GameWorld
                 updateMenu(delta);
                 break;
             case RUNNING:
-                updateGame(delta);
+                updateGame(delta, currentState);
                 break;
             case GAMEOVER:
                 updateGameOver(delta);
@@ -61,24 +66,31 @@ public class GameWorld
         }
     }
 
-    public void updateGame(float delta)
+    public void updateGame(float delta, GameScreen.GameState currentState)
     {
         tree.update(delta);
         hive.update(delta);
         bear.update(groundLevel, delta);
-        ScoreManager.updateScore(bear, hive);
+        ScoreManager.updateScore(this);
         levelManager.update(this);
         updateBackground();
     }
 
     public void updateMenu(float delta)
     {
+        menuWorld.update(delta);
+    }
 
+    public void renderMenu(SpriteBatch batch)
+    {
+        batch.begin();
+        menuWorld.render(batch);
+        batch.end();
     }
 
     public void updateGameOver(float delta)
     {
-
+        ScoreManager.updateHighScore();
     }
 
     public Bear getBear()
@@ -96,6 +108,7 @@ public class GameWorld
         switch (currentState)
         {
             case MENU:
+                renderMenu(batch);
                 //UI Manager handles menu UI
                 break;
             case RUNNING:
@@ -113,11 +126,13 @@ public class GameWorld
     {
         batch.begin();
         renderBackground(batch);
+        tree.renderGraphic(batch);
+        hive.renderGraphic(batch);
         batch.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        tree.render(shape);
-        hive.render(shape);
+        //tree.renderHitbox(shape);
+        //hive.renderHitbox(shape);
         bear.render(shape);
         shape.end();
     }
@@ -131,10 +146,10 @@ public class GameWorld
     public void updateBackground()
     {
         if(bgPos.x + AssetLoader.bg.getRegionWidth() <= 0)
-            bgPos.x = AssetLoader.bg.getRegionWidth() - 100;
+            bgPos.x = bg2Pos.x + AssetLoader.bg2.getRegionWidth();
 
         if(bg2Pos.x + AssetLoader.bg2.getRegionWidth() <= 0)
-            bg2Pos.x = AssetLoader.bg2.getRegionWidth() - 100;
+            bg2Pos.x = AssetLoader.bg2.getRegionWidth();
 
         bgPos.x = bgPos.x - speed;
         bg2Pos.x = bg2Pos.x - speed;
@@ -143,7 +158,6 @@ public class GameWorld
     public void setSpeed(int speed)
     {
         tree.setSpeed(speed);
-        this.speed = speed / 2;
     }
 
     public void setHasEnded(boolean hasEnded)
@@ -162,9 +176,15 @@ public class GameWorld
         this.setSpeed(10);
         tree.setSpeed(20);
         tree.setPosition(Gdx.graphics.getWidth(), 345);
+        bear.setGrabbing(false);
         ScoreManager.score = 0;
         ScoreManager.hivesMissed = 0;
         ScoreManager.missedHives.clear();
         ScoreManager.scoredHives.clear();
+    }
+
+    public Hive getHive()
+    {
+        return hive;
     }
 }

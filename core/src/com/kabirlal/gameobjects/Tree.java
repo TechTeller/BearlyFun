@@ -2,9 +2,11 @@ package com.kabirlal.gameobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.kabirlal.helpers.AssetLoader;
 
 public class Tree
 {
@@ -14,12 +16,12 @@ public class Tree
     private Rectangle hitbox;
     private float speed ;
 
-    public Tree(float x, float y, int width, int height, float speed)
+    public Tree(float x, float y, float speed)
     {
         this.position = new Vector2(x, y);
         this.speed = speed;
-        this.height = height;
-        this.width = width;
+        this.height = AssetLoader.treeRegion.getRegionHeight();
+        this.width = AssetLoader.treeRegion.getRegionWidth();
 
         hitbox = new Rectangle(position.x, position.y, this.width, this.height);
     }
@@ -32,15 +34,15 @@ public class Tree
         hitbox.setPosition(position);
     }
 
-    public void render(ShapeRenderer renderer)
+    public void renderHitbox(ShapeRenderer renderer)
     {
         renderer.setColor(Color.BROWN);
         renderer.rect(hitbox.x, hitbox.y, hitbox.getWidth(), hitbox.getHeight());
     }
 
-    public float getBaseHeight()
+    public void renderGraphic(SpriteBatch batch)
     {
-        return position.y + height;
+        batch.draw(AssetLoader.treeRegion, hitbox.x, hitbox.y);
     }
 
     public float getHeight()

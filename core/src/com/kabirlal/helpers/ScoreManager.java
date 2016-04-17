@@ -1,14 +1,14 @@
 package com.kabirlal.helpers;
 
 
-import com.kabirlal.gameobjects.Bear;
-import com.kabirlal.gameobjects.Hive;
+import com.kabirlal.gameworld.GameWorld;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScoreManager {
 
+    public static int highScore = getHighScore();
     public static int score = 0;
     public static List<Integer> scoredHives = new ArrayList<Integer>();
     public static List<Integer> missedHives = new ArrayList<Integer>();
@@ -16,18 +16,25 @@ public class ScoreManager {
 
     public static int currentIDChecked = -1;
 
-    public static void updateScore(Bear bear, Hive hive) {
-        if (CollisionHandler.areColliding(bear.hitbox, hive.hitbox) && bear.isGrabbing() && hive.getID() != currentIDChecked) {
+    public static void updateScore(GameWorld world) {
+
+        if (CollisionHandler.areColliding(world.getBear().hitbox, world.getHive().hitbox) && world.getBear().isGrabbing() && world.getHive().getID() != currentIDChecked) {
             score += 5;
-            scoredHives.add(hive.getID());
-            currentIDChecked = hive.getID();
+            scoredHives.add(world.getHive().getID());
+            currentIDChecked = world.getHive().getID();
         }
-        // If hive.x pos is less than bear.x pos, increment missed hive
-        if (hive.hitbox.x < bear.hitbox.x && !scoredHives.contains(hive.getID()) && !missedHives.contains(hive.getID()))
+        // If world.getHive().x pos is less than world.getBear().x pos, increment missed world.getHive()
+        if (world.getHive().hitbox.x < world.getBear().hitbox.x && !scoredHives.contains(world.getHive().getID()) && !missedHives.contains(world.getHive().getID()))
         {
-            missedHives.add(hive.getID());
+            missedHives.add(world.getHive().getID());
             hivesMissed = missedHives.size();
         }
+    }
+
+    public static void updateHighScore()
+    {
+            if(score > highScore)
+                setHighScore(score);
     }
 
     public static int getScore()
@@ -38,5 +45,17 @@ public class ScoreManager {
     public static int getMissedHives()
     {
         return hivesMissed;
+    }
+
+
+    public static void setHighScore(int val)
+    {
+        AssetLoader.prefs.putInteger("highScore", val);
+        AssetLoader.prefs.flush();
+    }
+
+    public static int getHighScore()
+    {
+        return AssetLoader.prefs.getInteger("highScore");
     }
 }

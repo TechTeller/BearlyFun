@@ -26,6 +26,7 @@ public class UIManager {
     private TextButton restartButton;
     private TextButton backToMenuButton;
     private Label gameoverScore;
+    private Label gameoverHighScore;
 
     private Viewport viewport;
     private GameScreen screen;
@@ -64,8 +65,8 @@ public class UIManager {
         menuStage = new Stage(viewport);
 
         startButton = new TextButton("Start", skin);
-        startButton.setSize(600, 200);
-        startButton.setPosition(viewport.getScreenWidth() / 2 - startButton.getWidth() / 2, viewport.getScreenHeight() / 2 - startButton.getHeight() /2);
+        startButton.setSize(412, 96);
+        startButton.setPosition(170, Gdx.graphics.getHeight() - 340 - 96);
         startButton.addListener(new InputListener()
         {
            public boolean touchDown(InputEvent event, float X, float y, int pointer, int button)
@@ -77,7 +78,6 @@ public class UIManager {
                 screen.setCurrentState(GameScreen.GameState.RUNNING);
                 Gdx.input.setInputProcessor(new InputHandler(screen.getWorld().getBear()));
             }
-
         });
 
         menuStage.addActor(startButton);
@@ -125,9 +125,13 @@ public class UIManager {
 
         });
 
-        gameoverScore = new Label("Score" + ScoreManager.getScore(), skin);
+        gameoverScore = new Label("Score: " + ScoreManager.getScore(), skin);
         gameoverScore.setPosition(backToMenuButton.getX(), backToMenuButton.getHeight() - 40);
 
+        gameoverHighScore = new Label("High Score: " + ScoreManager.highScore, skin);
+        gameoverHighScore.setPosition(Gdx.graphics.getWidth() - gameoverScore.getX(), gameoverScore.getY());
+
+        gameOverStage.addActor(gameoverHighScore);
         gameOverStage.addActor(gameoverScore);
         gameOverStage.addActor(restartButton);
         gameOverStage.addActor(backToMenuButton);
@@ -167,7 +171,8 @@ public class UIManager {
     {
         if(!Gdx.input.getInputProcessor().getClass().equals(gameOverStage))
             Gdx.input.setInputProcessor(gameOverStage);
-        gameoverScore.setText("Score : " + ScoreManager.getScore());
+        gameoverScore.setText("Score: " + ScoreManager.getScore());
+        gameoverHighScore.setText("HighScore: " + ScoreManager.getHighScore());
         gameOverStage.getViewport().update(width, height);
         gameOverStage.act(Gdx.graphics.getDeltaTime());
         gameOverStage.draw();

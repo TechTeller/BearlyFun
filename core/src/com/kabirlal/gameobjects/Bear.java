@@ -57,7 +57,6 @@ public class Bear {
     public void doGrab()
     {
         grabbing = true;
-        height = height / 2;
     }
 
     public void undoGrab()
@@ -65,7 +64,6 @@ public class Bear {
         if(grabbing)
         {
             grabbing = false;
-            height = height * 2;
         }
 
     }
@@ -73,6 +71,11 @@ public class Bear {
     public boolean isGrabbing()
     {
         return grabbing;
+    }
+
+    public void setGrabbing(boolean grabbing)
+    {
+        this.grabbing = grabbing;
     }
 
     public float getX()

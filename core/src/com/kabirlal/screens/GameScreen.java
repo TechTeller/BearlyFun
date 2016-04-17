@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kabirlal.gameworld.GameRenderer;
 import com.kabirlal.gameworld.GameWorld;
-import com.kabirlal.helpers.AssetLoader;
 import com.kabirlal.helpers.InputHandler;
 import com.kabirlal.ui.UIManager;
 
@@ -25,30 +24,24 @@ public class GameScreen implements Screen
     private GameWorld world;
     private GameRenderer renderer;
 
-    Viewport viewport;
+
+    Viewport uiViewport;
     OrthographicCamera camera;
 
     UIManager uiManager;
 
     private float runTime = 0;
 
+    public float screenWidth = 1920;
+    public float screenHeight = 1080;
 
     public GameScreen()
     {
         currentState = GameState.MENU;
-        float screenWidth = 1920;
-        float screenHeight = 1080;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
-        viewport = new FitViewport(screenWidth, screenHeight);
-
-        float gameWidth = 136;
-        float gameHeight = screenHeight / ( screenWidth / gameWidth );
-        int midPointY = (int) (gameHeight / 2);
-
-
-        AssetLoader.load();
+        uiViewport = new FitViewport(screenWidth, screenHeight, camera);
 
         world = new GameWorld();
         renderer = new GameRenderer(world, currentState);
@@ -56,7 +49,7 @@ public class GameScreen implements Screen
         Gdx.input.setInputProcessor(new InputHandler(world.getBear()));
 
         //Setup the UI
-        uiManager = new UIManager(viewport, this);
+        uiManager = new UIManager(uiViewport, this);
     }
 
     @Override
@@ -82,7 +75,9 @@ public class GameScreen implements Screen
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height)
+    {
+        uiViewport.update(width, height);
         uiManager.resize(width, height);
     }
 
@@ -105,7 +100,6 @@ public class GameScreen implements Screen
     public void dispose() {
         world.dispose();
         renderer.dispose();
-
     }
 
     public GameState getCurrentState()
@@ -122,5 +116,11 @@ public class GameScreen implements Screen
     {
         return world;
     }
+
+    public OrthographicCamera getCamera()
+    {
+        return camera;
+    }
+
 
 }
