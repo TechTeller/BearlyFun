@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.kabirlal.helpers.AssetLoader;
+import com.kabirlal.screens.GameScreen;
 
 public class Tree
 {
@@ -26,12 +27,18 @@ public class Tree
         hitbox = new Rectangle(position.x, position.y, this.width, this.height);
     }
 
-    public void update(float delta)
+    public void update(float delta, GameScreen.GameState currentState)
     {
-        if(position.x < 0 - width)
-            position.x = Gdx.graphics.getWidth() + width;
-        position.x = position.x - speed;
-        hitbox.setPosition(position);
+        if(currentState == GameScreen.GameState.MENU)
+        {
+            //Do nothing, just render the tree
+        }
+        else if(currentState == GameScreen.GameState.RUNNING)
+        {
+            if(position.x < 0 - width)
+                position.x = Gdx.graphics.getWidth() + width;
+            position.x = position.x - speed;
+        }
     }
 
     public void renderHitbox(ShapeRenderer renderer)
@@ -42,7 +49,7 @@ public class Tree
 
     public void renderGraphic(SpriteBatch batch)
     {
-        batch.draw(AssetLoader.treeRegion, hitbox.x, hitbox.y);
+        batch.draw(AssetLoader.treeRegion, position.x, position.y);
     }
 
     public float getHeight()

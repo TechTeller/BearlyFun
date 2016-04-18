@@ -2,9 +2,11 @@ package com.kabirlal.ui;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -22,7 +24,7 @@ public class UIManager {
     private Label scoreText;
     private Label missedHivesText;
     private Skin skin;
-    private TextButton startButton;
+    private ImageButton startButton;
     private TextButton restartButton;
     private TextButton backToMenuButton;
     private Label gameoverScore;
@@ -64,23 +66,6 @@ public class UIManager {
     {
         menuStage = new Stage(viewport);
 
-        startButton = new TextButton("Start", skin);
-        startButton.setSize(412, 96);
-        startButton.setPosition(170, Gdx.graphics.getHeight() - 340 - 96);
-        startButton.addListener(new InputListener()
-        {
-           public boolean touchDown(InputEvent event, float X, float y, int pointer, int button)
-           {
-               return true;
-           }
-
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                screen.setCurrentState(GameScreen.GameState.RUNNING);
-                Gdx.input.setInputProcessor(new InputHandler(screen.getWorld().getBear()));
-            }
-        });
-
-        menuStage.addActor(startButton);
     }
 
 
@@ -101,6 +86,7 @@ public class UIManager {
 
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 screen.getWorld().reset();
+                AssetLoader.start.play();
                 screen.setCurrentState(GameScreen.GameState.RUNNING);
             }
 
@@ -121,6 +107,7 @@ public class UIManager {
                 screen.setCurrentState(GameScreen.GameState.MENU);
                 screen.getWorld().reset();
                 Gdx.input.setInputProcessor(menuStage);
+                AssetLoader.start.play();
             }
 
         });
@@ -140,7 +127,7 @@ public class UIManager {
     public void updateAndRenderGameUI(int width, int height)
     {
         if(!Gdx.input.getInputProcessor().getClass().equals(InputHandler.class))
-            Gdx.input.setInputProcessor(new InputHandler(screen.getWorld().getBear()));
+            Gdx.input.setInputProcessor(new InputHandler(screen));
         scoreText.setText("Score : " + ScoreManager.getScore());
         if(ScoreManager.hivesMissed == 0)
             missedHivesText.setText("Missed Hives: 0");
@@ -150,9 +137,6 @@ public class UIManager {
         gameStage.act(Gdx.graphics.getDeltaTime());
         gameStage.draw();
     }
-
-
-
 
     public void update(GameScreen.GameState currentState)
     {
@@ -166,8 +150,7 @@ public class UIManager {
 
     public void updateAndRenderMenuUI(int width, int height)
     {
-        if(!Gdx.input.getInputProcessor().getClass().equals(menuStage))
-            Gdx.input.setInputProcessor(menuStage);
+        Gdx.input.setInputProcessor(new InputMultiplexer(new InputHandler(screen), menuStage));
         menuStage.getViewport().update(width, height);
         menuStage.act(Gdx.graphics.getDeltaTime());
         menuStage.draw();

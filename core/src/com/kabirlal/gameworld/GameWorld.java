@@ -11,7 +11,6 @@ import com.kabirlal.gameobjects.Tree;
 import com.kabirlal.helpers.AssetLoader;
 import com.kabirlal.helpers.LevelManager;
 import com.kabirlal.helpers.ScoreManager;
-import com.kabirlal.menuworld.MenuWorld;
 import com.kabirlal.screens.GameScreen;
 
 public class GameWorld
@@ -20,8 +19,6 @@ public class GameWorld
     private Bear bear;
     private Tree tree;
     private Hive hive;
-
-    private MenuWorld menuWorld;
 
     private int groundLevel;
     private boolean hasEnded;
@@ -38,10 +35,8 @@ public class GameWorld
         hasEnded = false;
         groundLevel = Gdx.graphics.getHeight() - 20;
 
-        menuWorld = new MenuWorld();
-
         bear = new Bear(200, 200, 200, 150 );
-        tree = new Tree(Gdx.graphics.getWidth(), 345, 20);
+        tree = new Tree(1080, 345, 20);
         hive = new Hive(tree);
         levelManager = new LevelManager();
 
@@ -68,7 +63,7 @@ public class GameWorld
 
     public void updateGame(float delta, GameScreen.GameState currentState)
     {
-        tree.update(delta);
+        tree.update(delta, GameScreen.GameState.RUNNING);
         hive.update(delta);
         bear.update(groundLevel, delta);
         ScoreManager.updateScore(this);
@@ -78,13 +73,59 @@ public class GameWorld
 
     public void updateMenu(float delta)
     {
-        menuWorld.update(delta);
+        //Play background music
+        AssetLoader.bgMusic.play();
+
+        //Update the tree
+        tree.update(delta, GameScreen.GameState.MENU);
+        //Update the hive on the tree
+        hive.update(delta);
+        bear.update(groundLevel, delta);
+        //Update the bear
+        bear.update(groundLevel, delta);
     }
 
-    public void renderMenu(SpriteBatch batch)
+    public void renderMenu(SpriteBatch batch, ShapeRenderer shape)
     {
         batch.begin();
-        menuWorld.render(batch);
+
+        //Render the base background for the game
+        //It does not start moving until currentState changes to RUNNING - Tap to start
+        batch.draw(AssetLoader.bg, 0, 0);
+
+
+        //Render the title logo in the middle of the screen
+        batch.draw(AssetLoader.titleLogoRegion, Gdx.graphics.getWidth()/2 - AssetLoader.titleLogo.getWidth() / 2, 200);
+
+        //Tree should be static with one hive on it
+        tree.renderGraphic(batch);
+
+        //Hive should be on the tree on a random location
+        hive.renderGraphic(batch);
+
+        batch.end();
+
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        //Render the bear in death animation
+        bear.render(shape);
+        shape.end();
+
+    }
+
+    public void renderGameOver(SpriteBatch batch)
+    {
+        batch.begin();
+
+        //Draw the background
+        batch.draw(AssetLoader.bg, 0, 0);
+
+        //Draw new tree
+        tree.renderGraphic(batch);
+
+        //Draw the hive on the tree
+        hive.renderGraphic(batch);
+
+
         batch.end();
     }
 
@@ -108,13 +149,14 @@ public class GameWorld
         switch (currentState)
         {
             case MENU:
-                renderMenu(batch);
+                renderMenu(batch, shape);
                 //UI Manager handles menu UI
                 break;
             case RUNNING:
                 renderGame(batch, shape);
                 break;
             case GAMEOVER:
+                renderGameOver(batch);
                 //UI Manager handles gameover UI
                 break;
             default:

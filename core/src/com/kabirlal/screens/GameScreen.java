@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kabirlal.gameworld.GameRenderer;
 import com.kabirlal.gameworld.GameWorld;
+import com.kabirlal.helpers.AssetLoader;
 import com.kabirlal.helpers.InputHandler;
 import com.kabirlal.ui.UIManager;
 
@@ -46,7 +47,7 @@ public class GameScreen implements Screen
         world = new GameWorld();
         renderer = new GameRenderer(world, currentState);
 
-        Gdx.input.setInputProcessor(new InputHandler(world.getBear()));
+        Gdx.input.setInputProcessor(new InputHandler(this));
 
         //Setup the UI
         uiManager = new UIManager(uiViewport, this);
@@ -100,6 +101,7 @@ public class GameScreen implements Screen
     public void dispose() {
         world.dispose();
         renderer.dispose();
+        AssetLoader.dispose();
     }
 
     public GameState getCurrentState()

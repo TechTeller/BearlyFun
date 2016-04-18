@@ -65,7 +65,6 @@ public class Bear {
         {
             grabbing = false;
         }
-
     }
 
     public boolean isGrabbing()
